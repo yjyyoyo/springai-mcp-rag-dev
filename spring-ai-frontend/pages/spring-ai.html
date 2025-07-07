@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SpringAI 实战</title>
+    <link rel="stylesheet" href="../css/doctor/doctor.css">
+    <link rel="stylesheet" href="../../libs/element-2.15.13/index.css">
+    <!-- <link rel="stylesheet" href="../css/theme/style/theme/index.css"> -->
+<style> 
+.el-upload-dragger  {
+    width: 260px;
+    height: 130px;
+}
+</style>
+</head>
+<body>
+    <div class="chat-container" id="doctorPage">
+        <div class="chat-header">
+            Spring-AI MCP服务+RAG知识库 实战
+        </div>
+        <div class="chat-messages" id="chat-messages">
+            
+            <block v-for="(item, index) in chatList">
+                <div class="message user" v-if="item.chatType === 'user'">
+                    <div class="text">{{ item.content }}</div>
+                    <div class="user-avatar">风</div>
+                </div>
+                <div class="message bot" v-else>
+                    <div class="avatar">AI</div>
+                    <div class="text" v-html="item.content"></div>
+                </div>
+            </block>
+
+        </div>
+
+        <div class="chat-input-container">
+            <div class="chat-input-group">
+                <div class="search-group">
+                    <div class="checkbox-group" id="searchOptionRadioGroup">
+                        <label>
+                            <input 
+                                type="button" 
+                                :class="{'search-style': !internetSearchSelected, 'search-style-selected': internetSearchSelected}" 
+                                id="internetSearch" 
+                                value="联网搜索" 
+                                @click="doInternetSearch(internetSearchSelected)" />
+                        </label>
+                        <label>
+                            <input 
+                                type="button" 
+                                :class="{'search-style': !knowledgeSearchSelected, 'search-style-selected': knowledgeSearchSelected}" 
+                                id="knowledgeSearch" 
+                                value="知识库搜索" 
+                                @click="doKnowledgeSearch(knowledgeSearchSelected)"/>
+                        </label>
+                        <!-- <label>
+                            <input 
+                                type="button" 
+                                :class="{'search-style': !imageReadSelected, 'search-style-selected': imageReadSelected}" 
+                                id="knowledgeSearch" 
+                                value="上传图片" 
+                                @click="doImageRead(imageReadSelected)"/>
+                        </label> -->
+                    </div>
+                </div>
+            
+                <div class="chat-input">
+                    <input type="text" id="user-input" class="user-input" value="" placeholder="请输入内容..." @keydown="handleKeyDown(event)">
+                    <button id="btn-chat" class="btn-chat" @click="doChat()">发送</button>
+                </div>
+            </div>
+            
+            <div class="upload-group">
+                <div class="button-group">
+                    <!-- <button>上传知识库文档</button> -->
+                    <!-- 允许上传PDF、Word文档、TEXT文档 -->
+                    <el-upload
+                        drag
+                        class="course-cover-uploader"
+                        action=""
+                        accept=".txt"
+                        :http-request="p => uploadDoc(p)"
+                        :show-file-list="false">
+                        <i class="el-icon-upload" style="margin-top: 20px;"></i>
+                        <div class="el-upload__text" style="font-size: 13px;">拖拽文档 或<em>点击上传</em></div>
+                        <div class="el-upload__tip" slot="tip">只能上传text文本文件, 且不超过10MB。</div>
+                    </el-upload>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+<script src="../libs/vue.min.js"></script>
+<script src="../libs/axios.min.js"></script>
+<script src="../libs/jquery-3.4.1.min.js"></script>
+<script src="../libs/js.cookie.min.js"></script>
+<script src="../js/app.js"></script>
+
+<script src="../libs/element-2.15.13/index.js"></script>
+<script src="../libs/marked.min.js"></script>
+
+<script src="../js/cookieUtils.js"></script>
+<script src="../js/request.js"></script>
+<script src="../js/apis/admin/doctorApi.js"></script>
+
+<script>
+
+	var doctorPage = new Vue({
+		el: "#doctorPage",
+		components: {
+			// 'my-component': httpVueLoader('my-component.vue')
+        },
+		data() {
+			return {
+				botMsgId: null,
+                currentUserName: null,
+                chatList: [],
+
+                internetSearchSelected: false,
+                knowledgeSearchSelected: false,
+                imageReadSelected: false,
+			}
+		},
+		created() { 
+			var me = this;
+            // 随机生成一个12位用户id
+            var userId = Math.random().toString(36).substring(2, 12);
+            console.log("userId = " + userId);
+            this.initSSE(userId);
+		},
+		mounted() {
+            this.scrollToBottom();
+
+        },
+		watch: {
+		},
+		methods: {
+            uploadDoc(params) {
+                console.log("自定义上传", params);
+
+                const file = params.file;
+
+                // 封装FormData对象
+                var formData = new FormData();
+                formData.append("file", params.file);
+
+                doctorApi.uploadRagDoc(formData).then(response => {
+                    console.log(response);
+                    if (response.status == 200) {
+                        this.$message.success('上传知识库文档成功！');  
+                    } else {
+                        this.$message.error('上传知识库文档失败！');
+                    }
+                    
+                });
+            },
+
+            initSSE(userId) {
+                var me = this;
+
+                let source = null;
+                if (window.EventSource) {
+                    // 建立连接
+                    source = new EventSource('http://10.0.0.8:9090/sse/connect?userId=' + userId);
+                    console.log("连接用户=" + userId);
+                    me.currentUserName = userId;
+                    
+                    source.addEventListener('open', function (e) {
+                        console.log("建立连接。。。");
+                    }, false);
+
+                    source.addEventListener('add', function (e) {
+
+                        // console.log("add事件...");
+                        console.log(e.data);
+                        var receiveMsg = e.data;
+
+                        var botMsgId = me.botMsgId;
+
+
+                        var needNew = true;
+                        for (var i = 0; i < me.chatList.length; i++) {
+                            var chatItem = me.chatList[i];
+                            if (chatItem.botMsgId == botMsgId) {
+                                needNew = false;
+                            }
+                        }
+
+
+                        // if (botMsgId == null || botMsgId == '') {
+                        if (needNew) {
+                            // botMsgId = me.generateRandomId(12);
+                            me.botMsgId = botMsgId;
+                            // console.log("botMsgId = " + botMsgId);
+
+                            // 为空，创建新对象
+                            var newBotContent = {
+                                id: "temp",
+                                content: receiveMsg,
+                                // time: '2023-05-01 12:00:00',
+                                userName: 'bot',
+                                chatType: 'bot',
+                                botMsgId: botMsgId,
+                            };
+                            me.chatList.push(newBotContent);
+
+                        } else {
+                            // console.log("botMsgId 不为空...");
+                            // console.log("botMsgId = " + botMsgId);
+
+                            // 不为空，找到对应的聊天记录流式插入数据
+                            for (var i = 0; i < me.chatList.length; i++) {
+                                var chatItem = me.chatList[i];
+                                if (chatItem.botMsgId == botMsgId) {
+                                    // 找到对应的聊天记录流式插入数据
+                                    chatItem.content += receiveMsg;
+                                }
+                            }
+                        }
+
+                        me.scrollToBottom();
+                    });
+
+                    source.addEventListener('finish', function (e) {
+                        console.log("finish事件...");
+                        console.log(e.data);
+                        var chatResponse = JSON.parse(e.data);
+                        var message = chatResponse.message;
+                        var botMsgId = chatResponse.botMsgId;
+
+                        // var test = marked.parse(e.data);
+                        // console.log(test);
+
+                        for (var i = 0; i < me.chatList.length; i++) {
+                            var chatItem = me.chatList[i];
+                            if (chatItem.botMsgId == botMsgId) {
+                                // 找到对应的聊天记录并且转换成html
+                                chatItem.content = marked.parse(message);
+                            }
+                        }
+
+                        me.botMsgId = null;
+                        me.scrollToBottom();
+                    });
+
+                    source.addEventListener('error', function (e) {
+                        console.log("error事件...");
+                        console.log("e.readyState: " + source.readyState);
+
+                        if (e.readyState === EventSource.CLOSED) {
+                            console.log('connection is closed');
+                        } else {
+                            console.log("Error occured", event);
+                        }
+                        // close方法用于关闭连接
+                        source.close();
+                    });
+
+                    source.addEventListener("customEvent", function(e) {
+                        console.log(e.lastEventId);
+                        console.log(e.data);
+                    }, false);
+                } else {
+                    console.log("浏览器不支持SSE");
+                }
+            },
+
+            handleKeyDown(event) {
+                if (event.key === 'Enter') {    
+                    this.doChat();
+                }
+            },
+
+            doChat() {
+                var me = this;
+                var currentUserName = this.currentUserName;
+
+                var botMsgId = me.generateRandomId(12);
+                me.botMsgId = botMsgId;
+
+                const userInput = document.getElementById('user-input').value;
+                var pendingMsg = userInput.trim();
+                if (pendingMsg === '') return;
+
+                // 发送消息到后端
+                var singleChat = {
+                    currentUserName: currentUserName,
+                    message: pendingMsg,
+                    botMsgId: botMsgId
+                };
+
+                var internetSearchSelected = this.internetSearchSelected;
+                var knowledgeSearchSelected = this.knowledgeSearchSelected;
+                    
+                if (knowledgeSearchSelected && !internetSearchSelected) {
+                    console.log("ragSearch");
+                    doctorApi.ragSearch(singleChat);
+                } else if (!knowledgeSearchSelected && internetSearchSelected) {
+                    console.log("internetSearch");
+                    doctorApi.internetSearch(singleChat);
+                } else {
+                    console.log("doChat");
+                    doctorApi.doChat(singleChat);
+                }
+                
+                
+                
+
+
+                var newUserContent = {
+                        content: pendingMsg,
+                        userName: currentUserName,
+                        chatType: 'user',
+                    }
+                this.chatList.push(newUserContent);
+
+                document.getElementById('user-input').value = '';
+            },
+
+            generateRandomId(length) {
+                const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+                let result = '';
+                const charactersLength = characters.length;
+                for (let i = 0; i < length; i++) {
+                    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+                }
+                return result;
+            },
+
+            scrollToBottom() {
+                const chatMessages = document.getElementById('chat-messages');
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            },
+
+            doInternetSearch(internetSearchSelected) {
+                this.internetSearchSelected = !internetSearchSelected;
+
+                if (this.internetSearchSelected) {
+                    this.knowledgeSearchSelected = false;
+                    this.imageReadSelected = false;
+                }
+            },
+
+            doKnowledgeSearch(knowledgeSearchSelected) {
+                this.knowledgeSearchSelected = !knowledgeSearchSelected;
+
+                if (this.knowledgeSearchSelected) {
+                    this.internetSearchSelected = false;
+                    this.imageReadSelected = false;
+                }
+            },
+
+            doImageRead(imageReadSelected) {
+                this.imageReadSelected = !imageReadSelected;
+
+                if (this.imageReadSelected) {
+                    this.knowledgeSearchSelected = false;
+                    this.internetSearchSelected = false;
+                }
+            },
+        }
+	});
+
+</script>

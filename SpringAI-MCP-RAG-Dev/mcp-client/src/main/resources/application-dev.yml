@@ -1,0 +1,5 @@
+server:
+  port: 9090
+
+website:
+  domain: http://10.0.0.8:5501

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSE 客户端示例</title>
+</head>
+<body>
+    <h1>SSE 客户端示例3</h1>
+    <div id="messages"></div>
+
+</body>
+</html>
+
+<script>
+
+    let source = null;
+    let userId = Math.random().toString(36).substr(2, 9); // 生成一个随机字符串作为 userId
+    if (window.EventSource) {
+        // 创建一个EventSource对象，建立SSE连接
+        source = new EventSource('http://10.0.0.8:9090/sse/connect?userId=' + userId);
+                                  // http://127.0.0.1:5501/
+
+        // 建立连接成功，则会触发open事件
+        source.addEventListener('open', function(e) {
+            console.log('建立连接成功...');
+
+            var text = document.getElementById('messages').innerHTML;
+            text += '<br> 建立连接成功...';
+            document.getElementById('messages').innerHTML = text;
+
+        }, false);
+
+        // 客户端接收到服务器发来的消息时，会触发message事件
+        source.addEventListener('message', function(e) {
+            var msg = e.data;
+
+            var text = document.getElementById('messages').innerHTML;
+            text += '<br>' + msg;
+            document.getElementById('messages').innerHTML = text;
+
+        }, false);
+
+        // add 事件，stream 流式推送
+        source.addEventListener('add', function(e) {
+            var msg = e.data;
+
+            var text = document.getElementById('messages').innerHTML;
+            text += '<br>' + msg;
+            document.getElementById('messages').innerHTML = text;
+
+        }, false);
+
+        // 用户自定义事件
+        source.addEventListener('custom_event', function(e) {
+            var msg = e.data;
+
+            var text = document.getElementById('messages').innerHTML;
+            text += '<br>' + "自定义事件：" + msg;
+            document.getElementById('messages').innerHTML = text;
+
+        }, false);
+
+        // SSE完成时调用的事件
+        source.addEventListener('finish', function(e) {
+            console.log('当前SSE事件推送完毕...');
+        }, false);
+
+        // 连接发生错误时，会触发error事件
+        source.addEventListener('error', function(e) {
+            if (e.readyState == EventSource.CLOSED) {
+                console.log('连接已关闭...');
+
+                var text = document.getElementById('messages').innerHTML;
+                text += '<br> 连接已关闭...';
+                document.getElementById('messages').innerHTML = text;
+
+            } else {
+                console.log('发生错误...');
+            }
+        })
+
+    } else {
+        console.log('您的浏览器不支持SSE');
+        // closeSSE();
+    }
+
+    function closeSSE() {
+        source.close();
+    }
+
+</script>
