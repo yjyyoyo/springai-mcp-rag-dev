@@ -2,7 +2,7 @@
 // 创建axios实例
 const instance = axios.create({
     // baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
-    baseURL: "http://10.0.0.8:9090", // url = base url + request url
+    baseURL: "http://192.168.246.15", // url = base url + request url
     // baseURL: "http://150.109.247.64:9090",
     // baseURL: "https://www.itzixi.com/api", // url = base url + request url
     withCredentials: true, // send cookies when cross-domain requests
