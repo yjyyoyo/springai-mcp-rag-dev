@@ -18,7 +18,7 @@
     let userId = Math.random().toString(36).substr(2, 9); // 生成一个随机字符串作为 userId
     if (window.EventSource) {
         // 创建一个EventSource对象，建立SSE连接
-        source = new EventSource('http://192.168.246.15:9090/sse/connect?userId=' + userId);
+        source = new EventSource('http://127.0.0.1:9090/sse/connect?userId=' + userId);
                                   // http://127.0.0.1:5501/
 
         // 建立连接成功，则会触发open事件
