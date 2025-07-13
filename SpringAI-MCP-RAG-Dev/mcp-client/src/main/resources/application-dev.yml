@@ -1,6 +1,6 @@
 server:
   port: 9090
-  address: 0.0.0.0  # 新增此行
+  #address: 0.0.0.0  # 新增此行
 
 website:
   #domain: http://10.0.0.8:5501
