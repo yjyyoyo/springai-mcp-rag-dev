@@ -5,5 +5,5 @@ server:
 website:
   #domain: http://10.0.0.8:5501
   #domain: http://192.168.246.15:5501  http://localhost:9090
-  domain: http://127.0.0.0.1:9090
+  domain: http://127.0.0.0.1:5501
 
