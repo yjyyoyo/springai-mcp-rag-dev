@@ -31,11 +31,10 @@ public class ServiceLogAspect {
      * @param joinPoint
      * @return Object
      */
+    //切面注解@Around 环绕通知
     @Around("execution(* com.itzixi.service.impl..*.*(..))")
     public Object recordTimesLog(ProceedingJoinPoint joinPoint) throws Throwable {
-
 //        long begin = System.currentTimeMillis();
-
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
 

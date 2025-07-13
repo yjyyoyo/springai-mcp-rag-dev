@@ -31,6 +31,7 @@ public class SSEController {
      * @param
      * @return String
      */
+
     @GetMapping(path = "connect", produces = {MediaType.TEXT_EVENT_STREAM_VALUE})
     public SseEmitter connect(@RequestParam String userId){
         return SSEServer.connect(userId);

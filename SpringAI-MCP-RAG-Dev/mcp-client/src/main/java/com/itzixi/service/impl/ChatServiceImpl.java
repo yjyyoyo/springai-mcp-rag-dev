@@ -55,7 +55,6 @@ public class ChatServiceImpl implements ChatService {
 
     // 构造器注入，自动配置方式（推荐）
     public ChatServiceImpl(ChatClient.Builder chatClientBuilder, ToolCallbackProvider tools, ChatMemory chatMemory) {
-
         this.chatClient = chatClientBuilder
                 .defaultToolCallbacks(tools)
                 .defaultAdvisors(MessageChatMemoryAdvisor.builder(chatMemory).build())

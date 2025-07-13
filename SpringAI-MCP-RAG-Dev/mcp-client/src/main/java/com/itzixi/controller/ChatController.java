@@ -17,8 +17,6 @@ import reactor.core.publisher.Flux;
 @RestController
 @RequestMapping("chat")
 public class ChatController {
-
-
     @Resource
     private ChatService chatService;
 
@@ -26,5 +24,4 @@ public class ChatController {
     public void doChat(@RequestBody ChatEntity chatEntity){
         chatService.doChat(chatEntity);
     }
-
 }

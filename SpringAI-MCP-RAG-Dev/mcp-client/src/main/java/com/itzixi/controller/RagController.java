@@ -31,7 +31,7 @@ public class RagController {
     @PostMapping("/uploadRagDoc")
     public LeeResult uploadRagDoc(@RequestParam("file") MultipartFile file ){
         List<Document> documentList =  documentService.loadText(file.getResource(), file.getOriginalFilename());
-        return LeeResult.ok(documentList);
+        return LeeResult.ok(documentList);//返回null
     }
 
     @GetMapping("/doSearch")

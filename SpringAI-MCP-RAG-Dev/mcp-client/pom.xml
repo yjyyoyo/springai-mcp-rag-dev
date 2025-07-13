@@ -3,24 +3,25 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
+<!--1.基础信息-->
     <!-- 默认的打包方式 -->
     <packaging>jar</packaging>
-
+<!--    父类-->
+<!--    项目组织的唯一的标识符，对应JAVA的包结构，是main目录里Java的目录结构-->
     <parent>
         <groupId>com.itzixi</groupId>
         <artifactId>SpringAI-MCP-RAG-Dev</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-
+<!--    项目的唯一标识符，对应项目的根目录的名称-->
     <artifactId>mcp-client</artifactId>
-
+<!--环境配置-->
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-
+<!--3.依赖管理-->
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -120,8 +121,6 @@
             <artifactId>okhttp</artifactId>
             <version>4.12.0</version>
         </dependency>
-
-
     </dependencies>
 
 

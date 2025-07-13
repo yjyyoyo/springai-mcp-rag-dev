@@ -25,6 +25,12 @@ spring:
       chat:
         options:
           model: ${OPENAI_MODEL}
+#    openai:
+#      api-key: sk-c20a56cdafe6432190952a25dfa3c7cc
+#      base-url: https://api.deepseek.com
+#      chat:
+#        options:
+#          model: deepseek-chat
     vectorstore:
       redis:
         initialize-schema: true         # 是否初始化所需的模式
@@ -43,5 +49,5 @@ logging:
 internet:
   websearch:
     searxng:
-      url: http://localhost:6080/search
+      url: http://localhost:6680/search
       counts: 10
