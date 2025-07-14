@@ -72,7 +72,6 @@ public class SesrXngServiceImpl implements SesrXngService {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
         return Collections.emptyList();
     }
 

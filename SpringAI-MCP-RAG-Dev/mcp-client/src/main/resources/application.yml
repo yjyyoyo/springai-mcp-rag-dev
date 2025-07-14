@@ -19,18 +19,18 @@ spring:
               sse-endpoint: /sse
         stdio:
           servers-configuration: classpath:mcp-server.json
+    #    openai:
+    #      api-key: sk-c20a56cdafe6432190952a25dfa3c7cc
+    #      base-url: https://api.deepseek.com
+    #      chat:
+    #        options:
+    #          model: deepseek-chat
     openai:
       api-key: ${OPENAI_API_KEY}
       base-url: ${OPENAI_BASE_URL}
       chat:
         options:
           model: ${OPENAI_MODEL}
-#    openai:
-#      api-key: sk-c20a56cdafe6432190952a25dfa3c7cc
-#      base-url: https://api.deepseek.com
-#      chat:
-#        options:
-#          model: deepseek-chat
     vectorstore:
       redis:
         initialize-schema: true         # 是否初始化所需的模式
@@ -51,3 +51,5 @@ internet:
     searxng:
       url: http://localhost:6680/search
       counts: 10
+
+
