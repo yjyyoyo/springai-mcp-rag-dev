@@ -13,7 +13,7 @@ spring:
           connections:
             server1:
               url: https://mcp.amap.com
-              sse-endpoint: /sse?key=09557e21174fff33be82c6cf0fa2cbcb
+              sse-endpoint: /sse?key=4628a8e719e164ff38754af9f6dab645
             server2:
               url: http://localhost:9060
               sse-endpoint: /sse
