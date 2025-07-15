@@ -6,7 +6,7 @@ spring:
   ai:
     mcp:
       client:
-        enabled: true
+        enabled: false  # 临时禁用 MCP 功能
         name: spring-ai-mcp-client
         type: ASYNC
         sse:
