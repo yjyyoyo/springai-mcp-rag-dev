@@ -5,9 +5,9 @@ docker pull redis/redis-stack:latest
 ```
 
 ```
-docker run -d --name redis-stack \
--p 9379:6379 \
--e REDIS_ARGS="--requirepass 123456" \
+docker run -d --name redis-stack `
+-p 9379:6379 `
+-e REDIS_ARGS="--requirepass 123456" `
 redis/redis-stack:latest
 ```
 
