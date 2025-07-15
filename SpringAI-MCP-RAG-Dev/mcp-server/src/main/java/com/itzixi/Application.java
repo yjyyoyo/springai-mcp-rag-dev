@@ -25,15 +25,14 @@ public class Application {
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
     }
-
     /**
      * 注册MCP工具
      */
+
     @Bean
     public ToolCallbackProvider registMCPTools(DateTool dateTool, EmailTool emailTool, ProductTool productTool) {
         return MethodToolCallbackProvider.builder()
                 .toolObjects(dateTool, emailTool, productTool)
                 .build();
     }
-
 }

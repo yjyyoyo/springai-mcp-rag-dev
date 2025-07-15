@@ -6,7 +6,7 @@ spring:
   ai:
     mcp:
       client:
-        enabled: false
+        enabled: true
         name: spring-ai-mcp-client
         type: ASYNC
         sse:
@@ -40,7 +40,7 @@ spring:
   data:
     redis:
       host: 127.0.0.1
-      port: 9379
+      port: 6379
       password: 123456
 
 logging:

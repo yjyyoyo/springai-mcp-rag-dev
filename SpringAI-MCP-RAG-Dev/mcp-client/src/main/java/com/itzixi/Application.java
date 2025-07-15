@@ -1,8 +1,12 @@
 package com.itzixi;
 
 import io.github.cdimascio.dotenv.Dotenv;
+import org.springframework.ai.tool.ToolCallbackProvider;
+import org.springframework.ai.tool.method.MethodToolCallbackProvider;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 
 /**
  * @ClassName Application
@@ -12,7 +16,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  **/
 @SpringBootApplication
 public class Application {
-
     public static void main(String[] args) {
         // 加载.env文件
         Dotenv dotenv = Dotenv.configure().ignoreIfMissing().load();
@@ -20,4 +23,5 @@ public class Application {
         dotenv.entries().forEach(entry -> System.setProperty(entry.getKey(), entry.getValue()));
         SpringApplication.run(Application.class, args);
     }
+
 }
