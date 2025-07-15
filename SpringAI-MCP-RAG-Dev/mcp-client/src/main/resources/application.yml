@@ -6,7 +6,7 @@ spring:
   ai:
     mcp:
       client:
-        enabled: true
+        enabled: false
         name: spring-ai-mcp-client
         type: ASYNC
         sse:
