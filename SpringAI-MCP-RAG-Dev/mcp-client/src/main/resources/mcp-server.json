@@ -5,8 +5,7 @@
       "args": [
         "-y",
         "@modelcontextprotocol/server-filesystem",
-        "D:/software/doc"
+        "D:\\software\\doc"
       ]
     }
-  }
-}
+  
