@@ -7,11 +7,3 @@ website:
   #domain: http://192.168.246.15:5501  http://localhost:9090
   domain: http://127.0.0.1:5501
 
-logging:
-  level:
-    root: info
-    io.mcp: debug
-    org.springframework.ai.mcp: debug
-    reactor.core: debug
-    com.itzixi: debug
-

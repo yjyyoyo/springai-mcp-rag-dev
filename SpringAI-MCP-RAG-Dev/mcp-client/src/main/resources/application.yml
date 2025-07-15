@@ -6,31 +6,32 @@ spring:
   ai:
     mcp:
       client:
-        enabled: false  # 临时禁用 MCP 功能
+        enabled: true
         name: spring-ai-mcp-client
         type: ASYNC
         sse:
           connections:
-            server1:
-              url: https://mcp.amap.com
-              sse-endpoint: /sse?key=4628a8e719e164ff38754af9f6dab645
+#            server1:
+#              url: https://mcp.api-inference.modelscope.net/f06d8649ed3047/sse
+#              #https://mcp.amap.com
+#              #sse-endpoint: /sse?key=09557e21174fff33be82c6cf0fa2cbcb
             server2:
               url: http://localhost:9060
               sse-endpoint: /sse
         stdio:
           servers-configuration: classpath:mcp-server.json
-    #    openai:
-    #      api-key: sk-c20a56cdafe6432190952a25dfa3c7cc
-    #      base-url: https://api.deepseek.com
-    #      chat:
-    #        options:
-    #          model: deepseek-chat
     openai:
       api-key: ${OPENAI_API_KEY}
       base-url: ${OPENAI_BASE_URL}
       chat:
         options:
           model: ${OPENAI_MODEL}
+#    openai:
+#      api-key: sk-c20a56cdafe6432190952a25dfa3c7cc
+#      base-url: https://api.deepseek.com
+#      chat:
+#        options:
+#          model: deepseek-chat
     vectorstore:
       redis:
         initialize-schema: true         # 是否初始化所需的模式
@@ -49,7 +50,5 @@ logging:
 internet:
   websearch:
     searxng:
-      url: http://localhost:6680/search
+      url: http://localhost:6080/search
       counts: 10
-
-

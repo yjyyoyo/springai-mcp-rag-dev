@@ -11,3 +11,5 @@ https://bailian.console.aliyun.com/?tab=mcp#/mcp-market
 https://mcp.so/
 
 https://community.modelscope.cn/
+
+https://www.modelscope.cn/mcp
