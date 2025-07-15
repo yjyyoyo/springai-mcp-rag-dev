@@ -2,7 +2,7 @@ window.doctorApi = {
 
     doChat: function(bo) {
         return instance({
-            url: '/chat/doChat',
+            url: 'http://localhost:9090/chat/doChat',
             method: 'post',
             data: bo
         })

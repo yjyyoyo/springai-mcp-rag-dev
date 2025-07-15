@@ -8,10 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.content.Media;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import reactor.core.publisher.Flux;
 
@@ -23,6 +20,7 @@ import reactor.core.publisher.Flux;
  **/
 @RestController
 @RequestMapping("sse")
+@CrossOrigin(origins = "http://127.0.0.1:5500")
 public class SSEController {
 
     /**
@@ -33,7 +31,7 @@ public class SSEController {
      */
 
     @GetMapping(path = "connect", produces = {MediaType.TEXT_EVENT_STREAM_VALUE})
-    public SseEmitter connect(@RequestParam String userId){
+    public SseEmitter connect(@RequestParam("userId") String userId){
         return SSEServer.connect(userId);
     }
 
@@ -72,7 +70,7 @@ public class SSEController {
      * @return Object
      */
     @GetMapping("sendMessageAll")
-    public Object sendMessageAll(@RequestParam String message){
+    public Object sendMessageAll(@RequestParam("message") String message){
         SSEServer.sendMsgToAllUsers(message);
         return "OK";
     }

@@ -16,6 +16,7 @@ import reactor.core.publisher.Flux;
  **/
 @RestController
 @RequestMapping("chat")
+@CrossOrigin(origins = "http://127.0.0.1:5500") // 允许特定域名跨域
 public class ChatController {
     @Resource
     private ChatService chatService;
