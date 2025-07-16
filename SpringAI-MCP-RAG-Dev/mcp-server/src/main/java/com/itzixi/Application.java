@@ -18,6 +18,7 @@ import org.springframework.context.annotation.Bean;
  **/
 @MapperScan("com.itzixi.mapper")
 @SpringBootApplication
+
 public class Application {
 
 //    http://localhost:9060/sse

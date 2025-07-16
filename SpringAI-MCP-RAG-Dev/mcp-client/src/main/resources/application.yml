@@ -11,10 +11,9 @@ spring:
         type: ASYNC
         sse:
           connections:
-#            server1:
-#              url: https://mcp.api-inference.modelscope.net/f06d8649ed3047/sse
-#              #https://mcp.amap.com
-#              #sse-endpoint: /sse?key=09557e21174fff33be82c6cf0fa2cbcb
+            server1:
+              url: https://mcp.amap.com
+              sse-endpoint: /sse?key=09557e21174fff33be82c6cf0fa2cbcb
             server2:
               url: http://localhost:9060
               sse-endpoint: /sse
@@ -39,7 +38,7 @@ spring:
         prefix: 'embedding:'             # Redis 键的前缀
   data:
     redis:
-      host: localhost
+      host: 127.0.0.1
       port: 9379
       password: 123456
 

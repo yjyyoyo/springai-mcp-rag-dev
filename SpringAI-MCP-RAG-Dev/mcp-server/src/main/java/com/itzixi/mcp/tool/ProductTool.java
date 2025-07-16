@@ -84,6 +84,7 @@ public class ProductTool {
         log.info(String.format("| 参数 productId 为： %s", productId));
         log.info("========== End ==========");
 
+        //条件构造器，动态构建SQL查询条件，避免手动拼接SQL字符串
         QueryWrapper<Product> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("product_id", productId);
 
