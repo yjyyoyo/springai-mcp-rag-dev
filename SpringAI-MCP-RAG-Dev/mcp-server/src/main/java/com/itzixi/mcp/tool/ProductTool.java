@@ -34,13 +34,16 @@ public class ProductTool {
 
     @Resource
     private ProductMapper productMapper;
-
+    /*
+    * @Description 请求对象，隔离外部输入与实体类，仅包含业务输入参数，不包含系统字段
+    * 注解：
+    * */
     @Data
     @ToString
-    @NoArgsConstructor
-    @AllArgsConstructor
+    @NoArgsConstructor //无参构造
+    @AllArgsConstructor //全参构造
     public static class CreateProductRequest {
-        @ToolParam(description = "商品的名称")
+        @ToolParam(description = "商品的名称") //声明参数用途，用于生成工具文档或校验规则
         private String productName;
         @ToolParam(description = "商品的品牌")
         private String brand;
@@ -63,14 +66,15 @@ public class ProductTool {
         log.info("========== End ==========");
 
         Product product = new Product();
+        //1.参数转换，将DTO属性复制到实体类，隔离输入与存储结构
         BeanUtils.copyProperties(createProductRequest, product);
 
         // 生成12为的随机数字
         product.setProductId(RandomStringUtils.randomNumeric(12));
-
+        //填充字段(创建时间，更新时间)
         product.setCreateTime(LocalDateTime.now());
         product.setUpdateTime(LocalDateTime.now());
-
+        //持久化，写入数据库
         productMapper.insert(product);
 
         return "商品信息创建成功";
@@ -94,7 +98,7 @@ public class ProductTool {
     }
 
 
-    @Data
+    @Data //自动生成 Getter/Setter/toString()等方法。
     @ToString
     @NoArgsConstructor
     @AllArgsConstructor
@@ -144,7 +148,7 @@ public class ProductTool {
         log.info("========== 调用MCP工具：getPriceCompareEnum() ==========");
         log.info(String.format("| 参数 priceCompare 为： %s", priceCompare));
         log.info("========== End ==========");
-
+        //忽略大小写做一个比对
         if (priceCompare.equalsIgnoreCase(PriceCompareEnum.GREATER_THAN.value)) {
             return PriceCompareEnum.GREATER_THAN;
         } else if (priceCompare.equalsIgnoreCase(PriceCompareEnum.LESS_THAN.value)) {
@@ -174,6 +178,7 @@ public class ProductTool {
         log.info(String.format("| 参数 queryProductRequest 为： %s", queryProductRequest.toString()));
         log.info("========== End ==========");
 
+        ////get属性
         String productId = queryProductRequest.getProductId();
         String productName = queryProductRequest.getProductName();
         String brand = queryProductRequest.getBrand();
@@ -184,7 +189,10 @@ public class ProductTool {
         Integer price = queryProductRequest.getPrice();
         PriceCompareEnum priceCompareEnum = queryProductRequest.getPriceCompareEnum();
 
+        ////用QueryWrapper从productMapper.xml中拿数据库字段
+        //条件构造器，构建查询条件
         QueryWrapper<Product> queryWrapper = new QueryWrapper<>();
+        //isNotBlank把字段前后的空格去掉
 
         if (StringUtils.isNotBlank(productId)) {
             queryWrapper.eq("product_id", productId);
@@ -198,7 +206,6 @@ public class ProductTool {
         if (status != null) {
             queryWrapper.eq("status", status);
         }
-
         if (price != null && priceCompareEnum != null) {
             if (priceCompareEnum.type.equals(PriceCompareEnum.GREATER_THAN.type)) {
                 queryWrapper.gt("price", price);
@@ -220,13 +227,14 @@ public class ProductTool {
                 queryWrapper.eq("price", price);
             }
         }
-
+        //正序&倒序
         if (sortEnum != null && sortEnum.type.equals(ListSortEnum.ASC.type)) {
             queryWrapper.orderByAsc("price");
         }
         if (sortEnum != null && sortEnum.type.equals(ListSortEnum.DESC.type)) {
             queryWrapper.orderByDesc("price");
         }
+
 
         List<Product> productList = productMapper.selectList(queryWrapper);
 
@@ -275,7 +283,6 @@ public class ProductTool {
         if (update <= 0) {
             return "商品信息更新失败，或商品可能不存在";
         }
-
         return "商品信息更新成功";
     }
 

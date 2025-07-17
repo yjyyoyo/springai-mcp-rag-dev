@@ -11,8 +11,9 @@ import java.time.LocalDateTime;
  * @Version 1.0
  * @Description Product
  **/
-@Data
-@ToString
+@Data  //自动生成 Getter/Setter/toString()等方法。
+@ToString //重写 toString()便于日志输出。
+//ORM 框架（如 MyBatis-Plus）的操作对象，直接与数据库交互
 public class Product {
     private String productId;
     private String productName;

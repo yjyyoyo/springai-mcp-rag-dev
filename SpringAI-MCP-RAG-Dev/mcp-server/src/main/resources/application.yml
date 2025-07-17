@@ -29,7 +29,7 @@ spring:
     host: smtp.163.com               # 邮箱host
     port: 465                      # 邮箱固定端口
     username: yanjieyi0421@163.com
-    password: Xy6756093
+    password: VThEbFgYyAeFKFyL
     protocol: smtp                  # 邮箱协议
     default-encoding: UTF-8         # 默认编码
     properties:
